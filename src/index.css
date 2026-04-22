@@ -1,0 +1,36 @@
+:root {
+  color-scheme: dark;
+  font-family: 'Cormorant Garamond', 'Noto Serif TC', serif;
+  color: #f5efe3;
+  background: #0b0f14;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+button {
+  font-family: inherit;
+  color: inherit;
+  background: transparent;
+  border: 1px solid rgba(245, 239, 227, 0.4);
+  padding: 0.4em 1.2em;
+  border-radius: 999px;
+  cursor: pointer;
+  letter-spacing: 0.12em;
+  transition: background 0.2s ease;
+}
+
+button:hover {
+  background: rgba(245, 239, 227, 0.08);
+}

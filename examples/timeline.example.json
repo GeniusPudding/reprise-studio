@@ -1,0 +1,59 @@
+{
+  "meta": {
+    "song_id": "seeing-farthest",
+    "title": "看得最遠的地方",
+    "artist": "Original by 范瑋琪 / Cover by YOU",
+    "duration": 248.3,
+    "bpm": 72,
+    "key": "C major",
+    "created_at": "2026-04-22",
+    "version": 1
+  },
+
+  "sections": [
+    { "t": 0.0,    "end": 18.5,  "type": "intro",       "mood": "still" },
+    { "t": 18.5,   "end": 52.0,  "type": "verse1",      "mood": "soft"  },
+    { "t": 52.0,   "end": 74.0,  "type": "pre_chorus",  "mood": "ache"  },
+    { "t": 74.0,   "end": 108.0, "type": "chorus1",     "mood": "open"  },
+    { "t": 108.0,  "end": 140.0, "type": "verse2",      "mood": "soft"  },
+    { "t": 140.0,  "end": 162.0, "type": "pre_chorus",  "mood": "ache"  },
+    { "t": 162.0,  "end": 196.0, "type": "chorus2",     "mood": "open"  },
+    { "t": 196.0,  "end": 216.0, "type": "bridge",      "mood": "defy"  },
+    { "t": 216.0,  "end": 242.0, "type": "chorus_last", "mood": "open"  },
+    { "t": 242.0,  "end": 248.3, "type": "outro",       "mood": "fin"   }
+  ],
+
+  "lyrics": [
+    { "t": 18.4,  "end": 22.1,  "text": "你是第一個發現我" },
+    { "t": 22.1,  "end": 28.0,  "text": "越面無表情 越是心裡難過", "emphasis": ["面無表情"] },
+    { "t": 28.5,  "end": 34.0,  "text": "所以當我不肯落淚的顫抖" },
+    { "t": 34.0,  "end": 40.0,  "text": "你會心疼地抱我在胸口" },
+    { "t": 41.0,  "end": 47.0,  "text": "你比誰都還了解" },
+    { "t": 47.0,  "end": 52.0,  "text": "我內心的渴望 比表面來得多" },
+
+    { "t": 52.5,  "end": 58.0,  "text": "所以當我跌斷翅膀的時候" },
+    { "t": 58.0,  "end": 64.5,  "text": "你不扶我  但陪我學忍痛", "emphasis": ["你不扶我"] },
+    { "t": 65.0,  "end": 73.0,  "text": "" },
+
+    { "t": 74.5,  "end": 80.0,  "text": "我要去看得最遠的地方" },
+    { "t": 80.0,  "end": 86.0,  "text": "和你手舞足蹈聊夢想" },
+    { "t": 86.5,  "end": 92.0,  "text": "像從來沒有失過望 受過傷" },
+    { "t": 92.0,  "end": 98.0,  "text": "還相信敢飛就有天空那樣", "emphasis": ["敢飛就有天空"] },
+    { "t": 98.5,  "end": 104.0, "text": "我要在看得最遠的地方" },
+    { "t": 104.0, "end": 108.0, "text": "披第一道曙光在肩膀" }
+  ],
+
+  "cues": [
+    { "t": 18.4,  "type": "flash-cold",  "label": "第一句人聲進入" },
+    { "t": 52.0,  "type": "color-flip",  "label": "pre-chorus 轉折" },
+    { "t": 74.0,  "type": "iris-open",   "label": "副歌爆發" },
+    { "t": 92.0,  "type": "flash-warm",  "label": "敢飛就有天空那樣" },
+    { "t": 140.0, "type": "shake-subtle","label": "第二段 pre-chorus" },
+    { "t": 162.0, "type": "iris-open",   "label": "第二副歌" },
+    { "t": 196.0, "type": "color-flip",  "label": "Bridge 進入" },
+    { "t": 216.0, "type": "iris-open",   "label": "最後副歌（全曲最高點）" },
+    { "t": 242.0, "type": "iris-close",  "label": "收尾" }
+  ],
+
+  "beats": []
+}

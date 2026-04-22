@@ -1,0 +1,11 @@
+{
+  "songs": [
+    {
+      "song_id": "seeing-farthest",
+      "title": "看得最遠的地方",
+      "status": "draft",
+      "timeline": "data/songs/seeing-farthest/timeline.json",
+      "config":   "data/songs/seeing-farthest/config.ts"
+    }
+  ]
+}

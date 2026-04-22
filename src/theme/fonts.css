@@ -1,0 +1,8 @@
+/**
+ * Font loading — Noto Serif TC (main lyric) + Cormorant Garamond (subtitle).
+ *
+ * Using Google Fonts by default. Swap to local @font-face if you need
+ * offline rendering (Remotion headless chrome can be finicky about CDN).
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Serif+TC:wght@400;500;600;700&display=swap');

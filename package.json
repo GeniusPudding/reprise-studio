@@ -1,0 +1,31 @@
+{
+  "name": "reprise-studio",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "description": "Lyric MV production system for cover singers — timeline JSON + audio → abstract lyric MV.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b --noEmit",
+    "remotion:studio": "remotion studio src/remotion/Root.tsx",
+    "remotion:render": "remotion render src/remotion/Root.tsx LyricMV out/output.mp4 --codec=h264 --crf=18"
+  },
+  "dependencies": {
+    "classnames": "^2.5.1",
+    "gsap": "^3.12.5",
+    "motion": "^11.11.17",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@remotion/cli": "^4.0.240",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "remotion": "^4.0.240",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10"
+  }
+}

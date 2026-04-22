@@ -1,0 +1,17 @@
+# Python-side dependencies for data pipeline (docs/DATA_PIPELINE.md).
+# Heavy ML deps (demucs, whisperx, torch) are pinned loosely — they move
+# fast and system-specific wheels matter. Re-pin in your own environment.
+
+demucs>=4.0
+whisperx>=3.1
+librosa>=0.10
+numpy>=1.24
+scipy>=1.11
+soundfile>=0.12
+mutagen>=1.47
+pydub>=0.25
+pysubs2>=1.6
+jsonschema>=4.21
+matplotlib>=3.8
+rich>=13.7
+click>=8.1

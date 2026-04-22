@@ -1,0 +1,2 @@
+# Drop per-song audio files here (e.g. seeing-farthest.mp3).
+# Large WAV masters should live in data/raw/ and stay out of git (see .gitignore).

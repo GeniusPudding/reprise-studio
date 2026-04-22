@@ -1,0 +1,16 @@
+{
+  "meta": {
+    "song_id": "SONG_ID",
+    "title": "SONG_TITLE",
+    "artist": "Cover by YOU",
+    "duration": 0.0,
+    "bpm": 0,
+    "key": "",
+    "created_at": "YYYY-MM-DD",
+    "version": 1
+  },
+  "sections": [],
+  "lyrics": [],
+  "cues": [],
+  "beats": []
+}
