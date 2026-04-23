@@ -46,13 +46,10 @@
 | MP4 渲染 | Remotion | React 元件 → 影片 |
 | 備援方案 | OBS 螢幕錄影 | Remotion 做不了的快速產出 |
 
-### 資料處理（Python 側）
-| 項目 | 選擇 | 用途 |
-|---|---|---|
-| 人聲分離 | Demucs | 預處理必做 |
-| 語音對齊 | WhisperX | 歌詞詞級時間戳初稿 |
-| 音訊分析 | librosa | BPM、RMS、段落特徵 |
-| 字幕編輯 | Aegisub | 人工校正 timeline |
+### 資料層（**不在本 repo**）
+
+音檔分離、歌詞對齊、段落標註由**另一個資料 repo** 負責。
+本 repo 消費符合 `src/engine/types.ts` 和 `examples/timeline.example.json` schema 的 `timeline.json`。
 
 ---
 
@@ -119,24 +116,16 @@ your-project/
 │   │   └── seeing-farthest.mp3
 │   └── fonts/                     # 本地字體（若有）
 │
-├── data/
-│   ├── songs/
-│   │   └── seeing-farthest/
-│   │       ├── timeline.json      # 標註好的資料
-│   │       ├── config.ts          # 本首歌的 scene 順序與 palette
-│   │       └── notes.md           # 設計筆記
-│   │
-│   └── raw/                       # 原始音檔、歌詞 txt（不上 git）
-│       └── seeing-farthest/
-│           ├── song.wav
-│           └── lyrics.txt
-│
-└── scripts/                       # Python 預處理
-    ├── separate.py                # Demucs wrapper
-    ├── align.py                   # WhisperX + 格式轉換
-    ├── analyze.py                 # librosa 分析
-    └── validate_timeline.py       # JSON schema 驗證
+└── data/
+    └── songs/
+        └── seeing-farthest/
+            ├── timeline.json      # 從資料 repo 拉進來
+            ├── config.ts          # 本首歌的 scene 順序與 palette
+            └── notes.md           # 設計筆記
 ```
+
+> 音檔放 `public/audio/<song-id>.mp3`（前端播放用，壓縮版即可）。
+> 原始 WAV 和對齊草稿屬於資料 repo 的範圍，不進本 repo。
 
 ---
 
@@ -145,19 +134,17 @@ your-project/
 **目標**：把空專案跑起來、能載入 timeline、能播放音檔。
 
 ### 任務
-1. `npm create vite@latest` 建立 React + TS 專案
-2. 安裝依賴：`motion`, `gsap`, `@remotion/cli`, `classnames`
-3. 建立上述檔案結構（可以全部空檔案，只要有骨架）
-4. 把 kit 裡的 `docs/`、`CLAUDE.md`、`examples/timeline.example.json` 移入
-5. 建立 `src/engine/types.ts` 定義資料型別
-6. 建立 `src/engine/useAudioClock.ts`（最小實作）
-7. `App.tsx` 能：載入音檔 → 按 play → 顯示當前時間
+1. 專案結構已就緒（Vite + React + TS + Motion + GSAP + Remotion 依賴已在 `package.json`）
+2. `npm install`
+3. `src/engine/types.ts` 定義資料型別（已完成）
+4. `src/engine/useAudioClock.ts`（最小實作，已完成）
+5. `App.tsx` 載入音檔 → 按 play → 顯示當前時間（已完成）
 
 ### 驗收
 - [ ] `npm run dev` 可以跑
 - [ ] 頁面有音訊控制、顯示 `currentTime`
-- [ ] TypeScript 沒有 error
-- [ ] `types.ts` 定義了 `TimelineEntry`, `Section`, `Cue`, `SongConfig` 四個型別
+- [ ] TypeScript 沒有 error（`npm run typecheck`）
+- [ ] `types.ts` 定義了 `TimelineEntry`, `Section`, `Cue`, `SongConfig`
 
 **預估時間**：1–2 小時
 

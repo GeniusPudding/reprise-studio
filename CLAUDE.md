@@ -4,7 +4,9 @@
 
 ## 專案一句話定位
 
-本專案是**個人翻唱歌手的 MV 生產系統**：輸入（歌曲音檔 + 歌詞 timeline JSON）→ 輸出（抒情抽象風格的 Lyric MV 影片）。
+本專案是**個人翻唱歌手的精緻 Lyric MV 生產系統**。
+輸入：一份已對齊的（音檔 + 歌詞 timeline JSON）資料集，來自**另一個資料 repo**（本 repo 不處理音檔分離、歌詞對齊、段落標註）。
+輸出：抒情抽象風格、可上 YouTube 的 Lyric MV。
 
 ## 工作原則（請嚴格遵守）
 
@@ -14,15 +16,17 @@
 - 本檔 `CLAUDE.md`
 - `docs/ROADMAP.md`（目前處於哪個 Phase）
 - `docs/DESIGN.md`（視覺規範，不能違背）
+- `docs/AGENT_PROTOCOL.md`（**任何視覺任務都必讀**，定義了 agent 交付的硬約束）
 - `docs/WORKFLOW.md`（對應當前任務的 SOP）
 
-如果任務涉及新場景設計，**必須**先看 `examples/scene.example.tsx` 和 `DESIGN.md` 的 scene 設計原則。
+如果任務涉及新場景設計，**必須**先看 `examples/scene.example.tsx`、`src/scenes/SceneSilence.tsx`、以及 `AGENT_PROTOCOL.md` §二的 12 條不變量。
 
 ### 2. 資料與視覺嚴格分離
 
-- Timeline JSON 是**單一真實來源（single source of truth）**
+- Timeline JSON 是**單一真實來源（single source of truth）**，來自外部資料 repo
 - Scene 元件**只消費 timeline**，不內建歌詞文字、不內建時間戳
 - 若發現視覺層寫死了歌詞或時間，**視為 bug**，要重構
+- 要擴充 timeline schema 必須同步更新 `src/engine/types.ts` 和 `examples/timeline.example.json`，否則會被視為不合法的契約
 
 ### 3. 設計決策收斂到 tokens
 
@@ -33,7 +37,8 @@
 
 - 一個 scene = 一個檔案 = 一種視覺語言
 - Scene 之間不互相依賴
-- Scene 接收統一 props（`{ progress, energy, section, lyric }`），不自己讀全局狀態
+- Scene 接收統一 props（`SceneProps`：`{ progress, energy, section, palette, lyric }`），不自己讀全局狀態
+- 「單檔原則」是為了讓任何 agent 能獨立接手、替換、A/B 測試一個 scene；違反這條就破壞 `AGENT_PROTOCOL` 的核心假設
 
 ### 5. 先可運行，再求精緻
 
@@ -45,6 +50,13 @@
 
 音訊同步的正確性**高於一切視覺效果**。任何動畫不能破壞 `audio.currentTime` 作為主時鐘的原則。
 發現對齊偏差先修對齊，再調視覺。
+
+### 7. 依 AGENT_PROTOCOL 交付
+
+所有視覺工作（scene / layer / palette）走 `docs/AGENT_PROTOCOL.md` 的交付格式：
+- 事先寫 Scene / Palette Brief（模板見 `docs/briefs/`）
+- 交付後回覆 §四 Delivery Contract 所要求的清單（檔案、token 引用、動態規則、限制、測試方式）
+- 任一項 §二不變量被違反，就回頭改到合規為止，不要妥協
 
 ## 技術棧（已決定，請勿擅自更換）
 

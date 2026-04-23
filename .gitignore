@@ -9,27 +9,11 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# --- Python / venv ---
-.venv/
-venv/
-__pycache__/
-*.pyc
-*.pyo
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-.ipynb_checkpoints/
-
-# --- Data: heavy / private ---
-# Raw WAV masters, moodboards, WhisperX drafts — regeneratable, keep out.
-data/raw/**
-!data/raw/.gitkeep
-
-# Rendered MP4s live here — don't push multi-GB output to git.
+# --- Rendered output ---
 out/
 *.mp4
 
-# Per-song audio shipped to /public is kept small in git (mp3); WAV should not be.
+# --- Large raw audio: keep WAV masters out; /public/audio ships mp3 only ---
 public/audio/*.wav
 
 # --- OS / editor ---
