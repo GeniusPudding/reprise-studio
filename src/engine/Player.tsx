@@ -7,14 +7,17 @@ import { LyricLayer } from '@/layers/LyricLayer';
 import { CueFlashLayer } from '@/layers/CueFlashLayer';
 import { GrainLayer } from '@/layers/GrainLayer';
 import { TimeScrubber } from '@/layers/TimeScrubber';
-import type { Scrubber } from './useScrubber';
+import type { Clock } from './clock';
+
+export type PlayerMode = 'audio' | 'scrubber';
 
 interface PlayerProps {
   config: SongConfig;
   timeline: Timeline;
   sceneRegistry: Record<string, ComponentType<SceneProps>>;
-  clock: Scrubber;
+  clock: Clock;
   energy: number;
+  mode: PlayerMode;
 }
 
 /**
@@ -23,7 +26,7 @@ interface PlayerProps {
  * `clock` is shape-compatible with both `useAudioClock` (real audio) and
  * `useScrubber` (dev). The Player itself doesn't care which.
  */
-export function Player({ config, timeline, sceneRegistry, clock, energy }: PlayerProps) {
+export function Player({ config, timeline, sceneRegistry, clock, energy, mode }: PlayerProps) {
   const { currentLyric, currentSection, recentCue } = useTimeline(clock.currentTime, timeline);
 
   return (
@@ -43,7 +46,12 @@ export function Player({ config, timeline, sceneRegistry, clock, energy }: Playe
       <GrainLayer />
       <CueFlashLayer recentCue={recentCue} currentTime={clock.currentTime} />
       <LyricLayer lyric={currentLyric} />
-      <TimeScrubber clock={clock} sections={timeline.sections} currentSectionType={currentSection?.type} />
+      <TimeScrubber
+        clock={clock}
+        sections={timeline.sections}
+        currentSectionType={currentSection?.type}
+        mode={mode}
+      />
     </div>
   );
 }

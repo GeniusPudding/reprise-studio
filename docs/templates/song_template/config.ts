@@ -1,7 +1,7 @@
 import type { SongConfig } from '@/engine/types';
 import { templatePalette } from '@/theme/palettes/_template';
 
-export const SONG_ID_config: SongConfig = {
+const config: SongConfig = {
   songId: 'SONG_ID',
   audioSrc: '/audio/SONG_ID.mp3',
   timelineSrc: '/data/songs/SONG_ID/timeline.json',
@@ -13,3 +13,5 @@ export const SONG_ID_config: SongConfig = {
     outro:       'SceneFin',
   },
 };
+
+export default config;

@@ -1,7 +1,7 @@
 import type { SongConfig } from '@/engine/types';
 import { seeingFarthestPalette } from '@/theme/palettes/seeing-farthest';
 
-export const seeingFarthestConfig: SongConfig = {
+const config: SongConfig = {
   songId: 'seeing-farthest',
   audioSrc: '/audio/seeing-farthest.mp3',
   timelineSrc: '/data/songs/seeing-farthest/timeline.json',
@@ -18,3 +18,5 @@ export const seeingFarthestConfig: SongConfig = {
     outro:       'SceneFin',
   },
 };
+
+export default config;

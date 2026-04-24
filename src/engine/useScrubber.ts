@@ -1,20 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-
-export interface Scrubber {
-  currentTime: number;
-  duration: number;
-  isPlaying: boolean;
-  play: () => void;
-  pause: () => void;
-  seek: (t: number) => void;
-}
+import type { Clock } from './clock';
 
 /**
  * Audio-less clock for dev: drives `currentTime` from a slider / keyboard /
  * RAF tick, with the same shape as `useAudioClock`. Lets us build and test
  * Phase 1 + scenes without needing real audio files.
  */
-export function useScrubber(duration: number): Scrubber {
+export function useScrubber(duration: number): Clock {
   const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const rafRef = useRef<number | null>(null);

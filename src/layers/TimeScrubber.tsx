@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
-import type { Scrubber } from '@/engine/useScrubber';
+import type { Clock } from '@/engine/clock';
 import type { Section } from '@/engine/types';
 
 interface Props {
-  clock: Scrubber;
+  clock: Clock;
   sections: Section[];
   currentSectionType?: string;
+  mode?: 'audio' | 'scrubber';
 }
 
 /**
@@ -18,7 +19,7 @@ interface Props {
  *   ]         jump to next section start
  *   0..9      jump to N/10 of duration
  */
-export function TimeScrubber({ clock, sections, currentSectionType }: Props) {
+export function TimeScrubber({ clock, sections, currentSectionType, mode = 'scrubber' }: Props) {
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
@@ -119,6 +120,9 @@ export function TimeScrubber({ clock, sections, currentSectionType }: Props) {
       </div>
 
       <div style={{ display: 'flex', gap: 12, alignItems: 'center', fontVariantNumeric: 'tabular-nums', fontSize: 14 }}>
+        <span style={{ opacity: 0.45, fontStyle: 'italic', fontSize: 12 }}>
+          {mode === 'audio' ? 'audio' : 'scrubber'}
+        </span>
         <span style={{ opacity: 0.6 }}>{currentSectionType ?? '—'}</span>
         <span>{format(clock.currentTime)} / {format(clock.duration)}</span>
       </div>

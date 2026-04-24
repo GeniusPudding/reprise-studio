@@ -1,13 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type RefObject } from 'react';
-
-export interface AudioClock {
-  currentTime: number;
-  duration: number;
-  isPlaying: boolean;
-  play: () => void;
-  pause: () => void;
-  seek: (t: number) => void;
-}
+import type { Clock } from './clock';
 
 /**
  * Drives a high-precision clock from an HTMLAudioElement.
@@ -15,7 +7,7 @@ export interface AudioClock {
  * Reads `audio.currentTime` on each animation frame. Audio playback is the
  * authoritative time source — visuals must follow it, never the other way.
  */
-export function useAudioClock(audioRef: RefObject<HTMLAudioElement | null>): AudioClock {
+export function useAudioClock(audioRef: RefObject<HTMLAudioElement | null>): Clock {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
