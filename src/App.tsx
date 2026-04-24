@@ -1,54 +1,43 @@
-import { useEffect, useRef, useState } from 'react';
-import { useAudioClock } from '@/engine/useAudioClock';
-import styles from './App.module.css';
+import { useEffect, useState } from 'react';
+import timelineJson from '@data/songs/seeing-farthest/timeline.json';
+import { seeingFarthestConfig } from '@data/songs/seeing-farthest/config';
+import { Player } from '@/engine/Player';
+import { useScrubber } from '@/engine/useScrubber';
+import { useFakeEnergy } from '@/engine/useFakeEnergy';
+import { sceneRegistry } from '@/scenes/registry';
+import type { Timeline } from '@/engine/types';
+import { Preview } from '@/preview/Preview';
 
-const SAMPLE_AUDIO_SRC = '/audio/seeing-farthest.mp3';
+const timeline = timelineJson as unknown as Timeline;
 
 export default function App() {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [ready, setReady] = useState(false);
-  const { currentTime, isPlaying, play, pause, seek } = useAudioClock(audioRef);
+  const route = useHashRoute();
 
-  useEffect(() => {
-    if (!audioRef.current) return;
-    const el = audioRef.current;
-    const onCanPlay = () => setReady(true);
-    el.addEventListener('canplay', onCanPlay);
-    return () => el.removeEventListener('canplay', onCanPlay);
-  }, []);
+  if (route === 'preview') return <Preview />;
+  return <SongView />;
+}
+
+function SongView() {
+  const clock = useScrubber(timeline.meta.duration);
+  const energy = useFakeEnergy(clock.currentTime, clock.isPlaying);
 
   return (
-    <div className={styles.app}>
-      <header className={styles.header}>
-        <div className={styles.title}>Reprise Studio</div>
-        <div className={styles.subtitle}>phase 0 — audio clock skeleton</div>
-      </header>
-
-      <main className={styles.stage}>
-        <div className={styles.clock}>
-          {formatTime(currentTime)}
-        </div>
-        <div className={styles.status}>
-          {ready ? (isPlaying ? 'playing' : 'paused') : 'loading audio…'}
-        </div>
-      </main>
-
-      <footer className={styles.controls}>
-        <button onClick={isPlaying ? pause : play} disabled={!ready}>
-          {isPlaying ? 'pause' : 'play'}
-        </button>
-        <button onClick={() => seek(0)} disabled={!ready}>
-          restart
-        </button>
-        <audio ref={audioRef} src={SAMPLE_AUDIO_SRC} preload="auto" />
-      </footer>
-    </div>
+    <Player
+      config={seeingFarthestConfig}
+      timeline={timeline}
+      sceneRegistry={sceneRegistry}
+      clock={clock}
+      energy={energy}
+    />
   );
 }
 
-function formatTime(seconds: number): string {
-  const m = Math.floor(seconds / 60);
-  const s = Math.floor(seconds % 60);
-  const ms = Math.floor((seconds % 1) * 1000);
-  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}.${String(ms).padStart(3, '0')}`;
+function useHashRoute(): string {
+  const [route, setRoute] = useState(() => window.location.hash.slice(1));
+  useEffect(() => {
+    const onChange = () => setRoute(window.location.hash.slice(1));
+    window.addEventListener('hashchange', onChange);
+    return () => window.removeEventListener('hashchange', onChange);
+  }, []);
+  return route;
 }

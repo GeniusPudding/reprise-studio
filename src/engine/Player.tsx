@@ -1,45 +1,49 @@
 import { type ComponentType } from 'react';
+import { AnimatePresence } from 'motion/react';
 import type { SceneProps, SongConfig, Timeline } from './types';
-import { useAudioClock } from './useAudioClock';
-import { useAudioEnergy } from './useAudioEnergy';
 import { useTimeline } from './useTimeline';
 import { SceneRouter } from './SceneRouter';
-import { useRef } from 'react';
+import { LyricLayer } from '@/layers/LyricLayer';
+import { CueFlashLayer } from '@/layers/CueFlashLayer';
+import { GrainLayer } from '@/layers/GrainLayer';
+import { TimeScrubber } from '@/layers/TimeScrubber';
+import type { Scrubber } from './useScrubber';
 
 interface PlayerProps {
   config: SongConfig;
   timeline: Timeline;
   sceneRegistry: Record<string, ComponentType<SceneProps>>;
+  clock: Scrubber;
+  energy: number;
 }
 
 /**
- * Top-level orchestrator: audio + clock + timeline → scene + layers.
+ * Top-level orchestrator: clock + timeline → scene + lyric + cue + grain.
  *
- * Phase 0 keeps this minimal. Lyric / cue / grain layers will be wired
- * in Phase 1+.
+ * `clock` is shape-compatible with both `useAudioClock` (real audio) and
+ * `useScrubber` (dev). The Player itself doesn't care which.
  */
-export function Player({ config, timeline, sceneRegistry }: PlayerProps) {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-  const { currentTime, isPlaying, play, pause } = useAudioClock(audioRef);
-  const { smoothed: energy } = useAudioEnergy(audioRef);
-  const { currentLyric, currentSection } = useTimeline(currentTime, timeline);
+export function Player({ config, timeline, sceneRegistry, clock, energy }: PlayerProps) {
+  const { currentLyric, currentSection, recentCue } = useTimeline(clock.currentTime, timeline);
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-      <SceneRouter
-        config={config}
-        sceneRegistry={sceneRegistry}
-        section={currentSection}
-        lyric={currentLyric}
-        energy={energy}
-        currentTime={currentTime}
-      />
+    <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
+      <AnimatePresence mode="wait">
+        <SceneRouter
+          key={currentSection?.type ?? 'none'}
+          config={config}
+          sceneRegistry={sceneRegistry}
+          section={currentSection}
+          lyric={currentLyric}
+          energy={energy}
+          currentTime={clock.currentTime}
+        />
+      </AnimatePresence>
 
-      <audio ref={audioRef} src={config.audioSrc} preload="auto" />
-
-      <div style={{ position: 'absolute', bottom: 24, left: 0, right: 0, display: 'flex', justifyContent: 'center', gap: 12, zIndex: 100 }}>
-        <button onClick={isPlaying ? pause : play}>{isPlaying ? 'pause' : 'play'}</button>
-      </div>
+      <GrainLayer />
+      <CueFlashLayer recentCue={recentCue} currentTime={clock.currentTime} />
+      <LyricLayer lyric={currentLyric} />
+      <TimeScrubber clock={clock} sections={timeline.sections} currentSectionType={currentSection?.type} />
     </div>
   );
 }

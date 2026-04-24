@@ -1,14 +1,14 @@
 import { AbsoluteFill } from 'remotion';
 
-interface Props {
-  songId: string;
-}
-
 /**
  * Placeholder composition. In Phase 4 this will drive frame-based playback
  * of scenes + lyrics + cues so Remotion can render deterministic MP4.
+ *
+ * Props are loose (Record<string, unknown>) to match Remotion's
+ * `Composition` generic; cast on read.
  */
-export function LyricMV({ songId }: Props) {
+export function LyricMV(props: Record<string, unknown>) {
+  const songId = (props.songId as string | undefined) ?? 'unknown';
   return (
     <AbsoluteFill style={{ background: '#0b0f14', color: '#f5efe3' }}>
       <div
