@@ -7,6 +7,7 @@ import { SceneSunrise } from './SceneSunrise';
 import { SceneRainSnow } from './SceneRainSnow';
 import { SceneSkyward } from './SceneSkyward';
 import { SceneFin } from './SceneFin';
+import { SceneNameless } from './SceneNameless';
 
 export const sceneRegistry: Record<string, ComponentType<SceneProps>> = {
   SceneSilence,
@@ -16,4 +17,5 @@ export const sceneRegistry: Record<string, ComponentType<SceneProps>> = {
   SceneRainSnow,
   SceneSkyward,
   SceneFin,
+  SceneNameless,
 };

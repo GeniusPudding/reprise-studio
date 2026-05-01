@@ -1,0 +1,161 @@
+/*
+ * SceneNameless styling.
+ *
+ * Every color comes from a CSS custom property set in SceneNameless.tsx.
+ * No literal hex / rgba — only `color-mix()` opacity stops over token-fed
+ * colors, which are mathematical operations, not magic colors.
+ *
+ * Layout intent: > 60% of the frame is empty. Three vertical beams sit on
+ * the lower-mid band. The middle beam is the "absent" one and is read
+ * through `--scene-absent-alpha` (inverse-energy-driven from React).
+ */
+
+.scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  filter: brightness(var(--scene-brightness, 0.6));
+}
+
+/* Layer 1: deep cold backdrop. Wide, dark fade — keeps majority empty. */
+.background {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 80% 70% at 50% 72%,
+    color-mix(in srgb, var(--scene-primary) 70%, var(--scene-ink)) 0%,
+    var(--scene-ink) 78%
+  );
+}
+
+/* Layer 2: low horizon line at 70% height, accent (paper) tint, very low alpha. */
+.horizon {
+  position: absolute;
+  left: 12%;
+  right: 12%;
+  top: 70%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--scene-accent) 35%, transparent) 50%,
+    transparent 100%
+  );
+  box-shadow: 0 0 10px
+    color-mix(
+      in srgb,
+      var(--scene-accent) calc(var(--scene-horizon-glow, 0.15) * 100%),
+      transparent
+    );
+}
+
+/*
+ * Beams: vertical light columns sitting on the lower-mid band.
+ * Each beam is a tall, narrow gradient strip with heavy blur.
+ * Top is brighter, bottom fades — implying a column dropping toward the horizon.
+ */
+.beam {
+  position: absolute;
+  bottom: 22%;
+  width: clamp(40px, 5vw, 72px);
+  height: clamp(220px, 32vh, 360px);
+  transform: translateX(-50%);
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    color-mix(
+      in srgb,
+      var(--scene-accent) calc(var(--scene-visible-alpha, 0.5) * 100%),
+      transparent
+    )
+      40%,
+    color-mix(
+      in srgb,
+      var(--scene-accent) calc(var(--scene-visible-alpha, 0.5) * 60%),
+      transparent
+    )
+      70%,
+    transparent 100%
+  );
+  filter: blur(14px);
+  pointer-events: none;
+}
+
+.beamLeft {
+  left: 30%;
+}
+
+.beamRight {
+  left: 70%;
+}
+
+/*
+ * The absent beam — middle position. Heavier blur, alpha driven directly
+ * by --scene-absent-alpha. This var is INVERSELY tied to energy in React,
+ * so when the music swells, this column dissolves further.
+ */
+.beamAbsent {
+  left: 50%;
+  filter: blur(28px);
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    color-mix(
+      in srgb,
+      var(--scene-accent) calc(var(--scene-absent-alpha, 0.12) * 100%),
+      transparent
+    )
+      45%,
+    color-mix(
+      in srgb,
+      var(--scene-accent) calc(var(--scene-absent-alpha, 0.12) * 50%),
+      transparent
+    )
+      75%,
+    transparent 100%
+  );
+}
+
+/*
+ * Empty name plate: thin-stroked rectangle, no fill, no content.
+ * Offset right of centre (62% horizontal), low (74% vertical), aspect ~3:2.
+ * Hairline drift on x-axis with period 8s, amplitude 1.5px. Loop period
+ * exceeds the 3s minimum and the brief's 6s minimum.
+ */
+.plate {
+  position: absolute;
+  left: 62%;
+  top: 74%;
+  width: clamp(60px, 6vw, 100px);
+  aspect-ratio: 3 / 2;
+  border: 1px solid
+    color-mix(in srgb, var(--scene-accent) 28%, transparent);
+  background: transparent;
+  pointer-events: none;
+  animation: plateDrift 8s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* Layer N: vignette to focus center, mirrors SceneSilence's dim envelope. */
+.vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 50%, var(--scene-ink) 100%);
+  opacity: var(--scene-vignette, 0.35);
+}
+
+@keyframes plateDrift {
+  0% {
+    transform: translateX(-1.5px);
+  }
+  100% {
+    transform: translateX(1.5px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plate {
+    animation: none;
+  }
+}

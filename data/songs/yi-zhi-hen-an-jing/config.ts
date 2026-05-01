@@ -1,22 +1,20 @@
 import type { SongConfig } from '@/engine/types';
-import { templatePalette } from '@/theme/palettes/_template';
+import { yiZhiHenAnJingPalette } from '@/theme/palettes/yi-zhi-hen-an-jing';
 
 const config: SongConfig = {
   songId: 'yi-zhi-hen-an-jing',
   audioSrc: '/audio/yi-zhi-hen-an-jing.mp3',
   timelineSrc: '/data/songs/yi-zhi-hen-an-jing/timeline.json',
-  palette: templatePalette,
+  palette: yiZhiHenAnJingPalette,
   sceneMap: {
     intro:       'SceneSilence',
-    verse1:      'SceneUnderstanding',
-    verse2:      'SceneUnderstanding',
-    pre_chorus:  'SceneRainSnow',
-    chorus1:     'SceneBrokenWings',
-    chorus2:     'SceneBrokenWings',
-    chorus_last: 'SceneBrokenWings',
+    verse1:      'SceneSilence',
+    verse2:      'SceneSilence',
+    chorus1:     'SceneNameless',
+    chorus2:     'SceneNameless',
+    chorus_last: 'SceneNameless',
     bridge:      'SceneSilence',
     solo:        'SceneSilence',
-    outro:       'SceneFin',
   },
 };
 
