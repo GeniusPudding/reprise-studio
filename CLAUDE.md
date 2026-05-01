@@ -9,7 +9,7 @@
 本專案是**個人翻唱歌手的精緻 Lyric MV 生產 + 設計系統**。
 
 - **輸入**：歌名 + 音訊檔案（使用者提供）
-- **資料**：歌詞時間標籤來自**另一個 repo**：`MandpopDataPipeline`（預設路徑 `D:\MandpopDataPipeline`）
+- **資料**：歌詞時間標籤來自**另一個 repo**：`MandpopDataPipeline`（GitHub: <https://github.com/GeniusPudding/MandpopDataPipeline>，本地預設路徑 `D:\MandpopDataset`）
 - **輸出**：抒情抽象風格、可上 YouTube 的 Lyric MV；瀏覽器可即時預覽，Remotion 可渲染 MP4
 
 Claude 在這個 repo 裡擔任兩個角色：
@@ -23,17 +23,26 @@ Claude 在這個 repo 裡擔任兩個角色：
 
 `timeline.json` 和歌詞時間標籤**不在本 repo 產生**。它們由外部資料 repo 提供：
 
-- **預設路徑**：`D:\MandpopDataPipeline`（Windows）
-- **覆寫方式**：環境變數 `MANDPOP_DATA_REPO`，或在本 repo 根目錄放 `.env` 設定
-- **預期結構**：
+- **GitHub**：<https://github.com/GeniusPudding/MandpopDataPipeline>
+- **本地預設路徑**：`D:\MandpopDataset`（Windows；目錄名不必和 repo 名一致）
+- **覆寫方式**：環境變數 `MANDPOP_DATASET`，或在本 repo 根目錄放 `.env` 設定
+- **目前實際結構**（與本 repo 預期 schema 有 gap）：
 
   ```
-  <MandpopDataPipeline>/
+  <MandpopDataset>/
   └── songs/
-      └── <song-id>/
-          ├── timeline.json
-          └── [其他資料 repo 自己管的東西，本 repo 不碰]
+      └── <中文歌名>/
+          ├── metadata.json    # title, artist, duration_sec, youtube_url
+          ├── lyrics.lrc       # LRC 格式（時間戳，無 section/cue 標記）
+          ├── lyrics.txt
+          ├── original.mp3
+          ├── instrumental.wav
+          └── vocals.wav
   ```
+
+- **Schema gap**：MandpopDataset 目前**只**提供 LRC + audio，**沒有** `sections[]` / `cues[]` / 詞 emphasis。本 repo 期待 `timeline.json` 帶完整 schema（見 `examples/timeline.example.json`）。
+
+  橋接方式：執行 `node scripts/intake-from-mandpop.mjs <中文歌名> <kebab-song-id>` — 解析 LRC + 用該腳本內的人工 SECTIONS / CUES map 產出合法 timeline.json，並 copy 音檔 + scaffold config.ts / notes.md。**長期目標**是把 sections / cues 變成 MandpopDataPipeline 的 first-class 輸出，廢掉這個 adapter。
 
 - **Schema 契約**：`timeline.json` 必須符合本 repo 的 `src/engine/types.ts` 與 `examples/timeline.example.json`。不合就回去資料 repo 修，**不要在本 repo 修 timeline**。
 - **更新**：資料 repo 的更新不會自動同步，每首新歌都要走 intake 流程手動拉進來。

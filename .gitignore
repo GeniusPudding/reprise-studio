@@ -13,8 +13,9 @@ pnpm-debug.log*
 out/
 *.mp4
 
-# --- Large raw audio: keep WAV masters out; /public/audio ships mp3 only ---
-public/audio/*.wav
+# --- Audio files: come from MandpopDataset, not committed here ---
+# Cover audio is copyrighted source material; the repo only holds engine + design.
+public/audio/*
 
 # --- OS / editor ---
 .DS_Store
