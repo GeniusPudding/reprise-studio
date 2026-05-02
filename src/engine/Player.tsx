@@ -1,4 +1,4 @@
-import { type ComponentType } from 'react';
+import { useState, type ComponentType } from 'react';
 import { AnimatePresence } from 'motion/react';
 import type { SceneProps, SongConfig, Timeline } from './types';
 import { useTimeline } from './useTimeline';
@@ -25,9 +25,17 @@ interface PlayerProps {
  *
  * `clock` is shape-compatible with both `useAudioClock` (real audio) and
  * `useScrubber` (dev). The Player itself doesn't care which.
+ *
+ * `offsetSec` shifts where in the timeline we look up events relative to
+ * audio time. Useful when the LRC was timed against a different recording
+ * than the one playing (common with karaoke covers). Live-nudgeable from
+ * the scrubber overlay; user copies the locked-in value into config.ts
+ * once it sounds right.
  */
 export function Player({ config, timeline, sceneRegistry, clock, energy, mode }: PlayerProps) {
-  const { currentLyric, currentSection, recentCue } = useTimeline(clock.currentTime, timeline);
+  const [offsetSec, setOffsetSec] = useState(config.lyricOffsetSec ?? 0);
+  const adjusted = clock.currentTime + offsetSec;
+  const { currentLyric, currentSection, recentCue } = useTimeline(adjusted, timeline);
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
@@ -39,18 +47,20 @@ export function Player({ config, timeline, sceneRegistry, clock, energy, mode }:
           section={currentSection}
           lyric={currentLyric}
           energy={energy}
-          currentTime={clock.currentTime}
+          currentTime={adjusted}
         />
       </AnimatePresence>
 
       <GrainLayer />
-      <CueFlashLayer recentCue={recentCue} currentTime={clock.currentTime} />
+      <CueFlashLayer recentCue={recentCue} currentTime={adjusted} />
       <LyricLayer lyric={currentLyric} />
       <TimeScrubber
         clock={clock}
         sections={timeline.sections}
         currentSectionType={currentSection?.type}
         mode={mode}
+        offsetSec={offsetSec}
+        onOffsetChange={setOffsetSec}
       />
     </div>
   );

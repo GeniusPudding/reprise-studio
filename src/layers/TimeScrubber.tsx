@@ -7,19 +7,31 @@ interface Props {
   sections: Section[];
   currentSectionType?: string;
   mode?: 'audio' | 'scrubber';
+  offsetSec?: number;
+  onOffsetChange?: (next: number) => void;
 }
 
 /**
  * Dev-only overlay: play/pause, slider, section markers, keyboard shortcuts.
  *
- *   space     play / pause
- *   ← / ,     -1s
- *   → / .     +1s
- *   [         jump to previous section start
- *   ]         jump to next section start
- *   0..9      jump to N/10 of duration
+ *   space        play / pause
+ *   ← / ,        -1s
+ *   → / .        +1s
+ *   [            jump to previous section start
+ *   ]            jump to next section start
+ *   0..9         jump to N/10 of duration
+ *   = / -        nudge timeline offset ±0.05s
+ *   + / _        nudge timeline offset ±0.5s   (shifted)
+ *   r            reset offset to 0
  */
-export function TimeScrubber({ clock, sections, currentSectionType, mode = 'scrubber' }: Props) {
+export function TimeScrubber({
+  clock,
+  sections,
+  currentSectionType,
+  mode = 'scrubber',
+  offsetSec = 0,
+  onOffsetChange,
+}: Props) {
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
@@ -49,6 +61,27 @@ export function TimeScrubber({ clock, sections, currentSectionType, mode = 'scru
           if (next) clock.seek(next.t);
           break;
         }
+        case '=':
+          e.preventDefault();
+          onOffsetChange?.(round(offsetSec + 0.05));
+          break;
+        case '+':
+          e.preventDefault();
+          onOffsetChange?.(round(offsetSec + 0.5));
+          break;
+        case '-':
+          e.preventDefault();
+          onOffsetChange?.(round(offsetSec - 0.05));
+          break;
+        case '_':
+          e.preventDefault();
+          onOffsetChange?.(round(offsetSec - 0.5));
+          break;
+        case 'r':
+        case 'R':
+          e.preventDefault();
+          onOffsetChange?.(0);
+          break;
         default:
           if (/^[0-9]$/.test(e.key)) {
             const frac = Number(e.key) / 10;
@@ -58,7 +91,7 @@ export function TimeScrubber({ clock, sections, currentSectionType, mode = 'scru
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [clock, sections]);
+  }, [clock, sections, offsetSec, onOffsetChange]);
 
   return (
     <div
@@ -123,6 +156,17 @@ export function TimeScrubber({ clock, sections, currentSectionType, mode = 'scru
         <span style={{ opacity: 0.45, fontStyle: 'italic', fontSize: 12 }}>
           {mode === 'audio' ? 'audio' : 'scrubber'}
         </span>
+        <span
+          title="lyric offset (=/- nudge ±0.05s, +/_ ±0.5s, r reset)"
+          style={{
+            opacity: offsetSec === 0 ? 0.4 : 0.85,
+            fontStyle: 'italic',
+            fontSize: 12,
+            color: offsetSec === 0 ? undefined : '#ffd27d',
+          }}
+        >
+          ofs {offsetSec >= 0 ? '+' : ''}{offsetSec.toFixed(2)}s
+        </span>
         <span style={{ opacity: 0.6 }}>{currentSectionType ?? '—'}</span>
         <span>{format(clock.currentTime)} / {format(clock.duration)}</span>
       </div>
@@ -134,6 +178,10 @@ function format(t: number): string {
   const m = Math.floor(t / 60);
   const s = Math.floor(t % 60);
   return `${m}:${String(s).padStart(2, '0')}`;
+}
+
+function round(t: number): number {
+  return Math.round(t * 100) / 100;
 }
 
 function moodTint(mood: string): string {

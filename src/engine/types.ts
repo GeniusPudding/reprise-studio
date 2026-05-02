@@ -90,6 +90,13 @@ export interface SongConfig {
   timelineSrc: string;
   palette: Palette;
   sceneMap: Partial<Record<SectionType, string>>;
+  /**
+   * Static offset (in seconds) added to `audio.currentTime` when looking
+   * up timeline events. Use when the LRC was timed against a different
+   * recording than the audio file (common with karaoke covers). Discover
+   * the right value by live-nudging in the scrubber, then commit it here.
+   */
+  lyricOffsetSec?: number;
 }
 
 export interface SceneProps {
