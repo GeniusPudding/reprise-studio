@@ -34,7 +34,14 @@ export function TimeScrubber({
 }: Props) {
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      // Only swallow keys when typing into a text-y input. The slider here
+      // is a range input which never produces text — let our shortcuts
+      // through even when it has focus after a click.
+      if (e.target instanceof HTMLTextAreaElement) return;
+      if (e.target instanceof HTMLInputElement) {
+        const t = e.target.type;
+        if (t !== 'range' && t !== 'checkbox' && t !== 'radio' && t !== 'button' && t !== 'submit') return;
+      }
       switch (e.key) {
         case ' ':
           e.preventDefault();
